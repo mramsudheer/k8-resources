@@ -37,3 +37,29 @@ tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
 eksctl version
 
+# INSTALLING KUBECTL
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.35.2/2026-02-27/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+
+kubectl version --client
+aws sts get-caller-identity
+
+# TO CREATE THE EKS CLUSTER
+eksctl create cluster -f eks.yaml
+
+eksctl get cluster
+kubectl get nodes
+
+kubectl apply -f 01-namespace.yaml
+kubectl describe namespace roboshop
+
+#Install the Identity Agent
+eksctl create addon --name eks-pod-identity-agent --cluster roboshop
+
+#Associate the Policy
+eksctl create podidentityassociation \
+  --cluster roboshop \
+  --namespace kube-system \
+  --service-account-name aws-node \
+  --permission-policy-arns arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy

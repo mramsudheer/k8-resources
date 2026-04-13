@@ -6,4 +6,5 @@ metadata:
     project: roboshop
     environment: dev
     owner: mramsudheer
+  annotations:
     purpose: "This namespace is for Roboshop application"
