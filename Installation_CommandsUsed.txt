@@ -1,6 +1,10 @@
 https://github.com/mramsudheer/k8-resources.git
 git diff --stat origin/main main
 
+IF YOU ARE UNABE TO SEE THE LATEST CHANGES AFTER GIT pull
+git fetch origin
+git reset --hard origin/main
+
 # DISK RESIZE
 
 df -hT
@@ -63,3 +67,37 @@ eksctl create podidentityassociation \
   --namespace kube-system \
   --service-account-name aws-node \
   --permission-policy-arns arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+
+
+kubectl apply -f 02-pod.yaml -n roboshop
+kubectl get pods -n roboshop
+kubectl get pods -n roboshop -o wide
+kubectl describe pod nginx -n roboshop
+
+kubectl config set-context --current --namespace=roboshop
+# Now you can just type: kubectl get pods
+
+kubectl delete pod nginx -n roboshop
+
+kubectl exec -it nginx -n roboshop -- curl localhost:80
+
+kubectl label pod nginx project=roboshop -n roboshop
+kubectl expose pod nginx --type=LoadBalancer --port=80 --target-port=80 -n roboshop
+kubectl get svc nginx -n roboshop
+
+
+eksctl delete cluster --name roboshop --region us-east-1
+
+To authenticate the cluster:
+aws eks update-kubeconfig --region us-east-1 --name roboshop
+
+TO GET THE NODES:
+kubectl get nodes
+
+TO ACCIGN THE LABELS:
+kubectl label nodes <node-name> project=roboshop
+
+TO SEE THE NODE LABELS
+kubectl get nodes --show-labels
+
+
